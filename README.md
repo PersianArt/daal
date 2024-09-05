@@ -24,12 +24,29 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Daal Backend Developer Challenge: Wallet Microservice - based on NestJs and TypeScript.
+
+## Design decisions and Assumptions
+
+* The project includes an Auth module for authentication purposes, as is customary in all projects. However, the AuthGuard is only set for the "users" and not for other requested routes.
+* The balance has been added to the user model as a property and have not considered a separate table for it.
+* The database has been dockerized, so you need Docker Desktop or a similar program to run the database, but the app has not been dockerized yet.
+* Currently, only end-to-end tests have been considered.
 
 ## Installation
 
 ```bash
 $ npm install
+```
+
+## Running the database
+
+```bash
+# development
+$ npx db:dev:restart
+
+# test
+$ npx db:test:restart
 ```
 
 ## Running the app
