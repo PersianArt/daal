@@ -1,24 +1,74 @@
 version: '3.8'
 services:
-  dev-db:
-    image: postgres:13
+  daal-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: daal-api
+    restart: always
     ports:
-      - 5434:5432
+      - 3000:3000
+    environment:
+      PORT: 3000
+      NODE_ENV: development
+      JWT_SECRET: super-secret
+      DATABASE_URL: postgresql://admin:123456@daal-db:5434/daal?schema=public
+    volumes:
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+      - ./test:/app/test
+    depends_on:
+      - daal-db
+      
+  daal-api-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: daal-api-test
+    restart: always
+    ports:
+      - 3001:3001
+    environment:
+      PORT: 3001
+      NODE_ENV: test
+      JWT_SECRET: super-secret
+      DATABASE_URL: postgresql://admin:123456@daal-db-test:5435/daal?schema=public
+    volumes:
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+      - ./test:/app/test
+    depends_on:
+      - daal-db-test
+
+  daal-db:
+    image: postgres:13
+    container_name: daal-db
+    restart: always
+    ports:
+      - 5434:5434
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: daal
-    networks:
-      - daal
-  test-db:
+    command: -p 5434
+    # volumes:
+    #   - daal-db:/var/lib/postgresql/data
+
+  daal-db-test:
     image: postgres:13
+    container_name: daal-db-test
+    restart: always
     ports:
-      - 5435:5432
+      - 5435:5435
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: daal
-    networks:
-      - daal
-networks:
-  daal:
+    command: -p 5435
+    # volumes:
+    #   - daal-db-test:/var/lib/postgresql/data
+
+# volumes:
+#   daal-db:
+#   daal-db-test:
+  

@@ -9,6 +9,12 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  await app.listen(3000);
+  
+  const PORT = process.env.PORT || 3000;
+  await app.listen(PORT, () => {
+    console.log(
+      `Running API in MODE: ${process.env.NODE_ENV} on Port: ${PORT}`,
+    );
+  });
 }
 bootstrap();
